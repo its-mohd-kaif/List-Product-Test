@@ -4,16 +4,25 @@ import "./Landingpage.css";
 const data = require("../amazon_products.json");
 
 function LandingPage() {
+  // UseState For Storing ALL Primary Categories
   const [data1, setData1] = useState([]);
+  // UseState For Storing ALL Category 1
   const [data2, setData2] = useState([]);
+  // UseState For Storing ALL Category 2
   const [data3, setData3] = useState([]);
 
+  // UseState For Storing value choose value of Primary Category
   const [primary, setPrimary] = useState("");
+  // UseState For Storing value choose value of  Category 1
   const [category1, setCategory1] = useState("");
+  // UseState For Storing value choose value of  Category 2
   const [category2, setCategory2] = useState("");
+  // UseState For Storing value choose value of  Category 3
   const [category3, setCategory3] = useState("");
+  // UseState For Storing result
   const [result, setResult] = useState([]);
 
+  // UseEffect For Remove dublicate and set into Data1 state
   useEffect(
     () => {
       let temp = data.map((val) => val.primary_category);
@@ -25,48 +34,56 @@ function LandingPage() {
     [category3]
   );
 
+  // Function For Select Primary Category
   const selectPrimary = (e) => {
     var val1 = e.target.value;
     setPrimary(e.target.value);
-
+    // make temp array
     let temp = [];
+
     data.forEach((element) => {
+      // Check when user select value equal to primary category and push category1 into temp array
       if (val1 === element.primary_category) {
         temp.push(element.category_1);
       }
     });
+    // Remove Dublicates
     temp = [...new Set(temp)];
     setData2(temp);
   };
   const selectCategory1 = (e) => {
     var val1 = e.target.value;
     setCategory1(e.target.value);
-
+    // make temp array
     let temp = [];
     data.forEach((element) => {
       if (val1 === element.category_1) {
         if (element.category_2 === "") {
           temp.push("no data");
         } else {
+          // Check when user select value equal to category1 and push category2 into temp array
           temp.push(element.category_2);
         }
       }
     });
+    // Remove Dublicates
     temp = [...new Set(temp)];
     setData3(temp);
   };
   const selectCategory2 = (e) => {
     var val1 = e.target.value;
     setCategory2(e.target.value);
-
+    // make temp array
     let temp = [];
     data.forEach((element) => {
       if (val1 === element.category_2) {
+        // Check when user select value equal to category2 and push category3 into temp array
         temp.push(element.category_3);
       }
     });
+    // Remove Dublicates
     temp = [...new Set(temp)];
-
+    // push only first value of array into category 3
     if (temp[0] === "" || e.target.value === "no data") {
       setCategory3("no data");
     } else {
@@ -76,6 +93,7 @@ function LandingPage() {
 
   const saveHandler = (e) => {
     e.preventDefault();
+    // Check Validation
     if (
       primary === "" &&
       category1 === "" &&
@@ -97,6 +115,7 @@ function LandingPage() {
     setCategory2("");
     setCategory3("");
   };
+  // Set Result Array into Local Storage
   localStorage.setItem("user", JSON.stringify(result));
 
   return (
@@ -109,7 +128,6 @@ function LandingPage() {
         </center>
         <div className="containerSelect">
           {/* Primary Category */}
-
           <select
             value={primary}
             className="selectData"
@@ -121,6 +139,7 @@ function LandingPage() {
             ))}
           </select>
           <br></br>
+          {/* Category 1*/}
           <select
             value={category1}
             className="selectData"
@@ -132,6 +151,7 @@ function LandingPage() {
             ))}
           </select>
           <br></br>
+          {/* Category 2*/}
           <select
             value={category2}
             className="selectData"
@@ -143,7 +163,8 @@ function LandingPage() {
             ))}
           </select>
         </div>
-        <div value={category3} style={{ marginLeft: "30%" }}>
+        {/* Category 3*/}
+        <div value={category3} style={{ marginLeft: "30%", marginTop: "1%" }}>
           {category3}
         </div>
         <br></br>
@@ -151,7 +172,7 @@ function LandingPage() {
           Save
         </button>
         <br></br>
-        {/* <button onClick={dataFilter}>Filter</button> */}
+        {/* Display Local Storage */}
         <div className="displayContainer">
           <table>
             <thead>
@@ -163,6 +184,7 @@ function LandingPage() {
               </tr>
             </thead>
             <tbody>
+              {/* Map Local Storage */}
               {JSON.parse(localStorage.getItem("user")).map((val) => (
                 <tr>
                   <td>{val.primary}</td>
